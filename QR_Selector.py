@@ -29,13 +29,12 @@ def qr_selector(qrs_per_row, qrs_per_col):
 
     canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
     canvas.configure(yscrollcommand=scroll_y.set, xscrollcommand=scroll_x.set)
-    #canvas.bind_all('<MouseWheel>', on_mousewheel)
 
     scroll_y.pack(side=RIGHT, fill=Y)
     scroll_x.pack(side=BOTTOM, fill=X)
     canvas.pack(side=LEFT, fill=BOTH, expand=True)
 
-    # Bind the mouse wheel to scroll
+    # Bind the mouse wheel and touch pad to scroll
     def on_vertical_scroll(event):
         canvas.yview_scroll(-1 * (event.delta // 120), "units")
     def on_horizontal_scroll(event):
@@ -50,8 +49,8 @@ def qr_selector(qrs_per_row, qrs_per_col):
     info_label = Label(info_panel, text="Select a QR Code", bg="lightgray", wraplength=180)
     info_label.pack(pady=10, padx=10)
     # Simulating QR code click behavior
-    def on_qr_click(row, col):
-        info = f"QR Code at Row {row}, Column {col}\nInfo: Example Data {random.randint(1, 100)}"
+    def on_qr_click(row, col, bonus):
+        info = f"QR Code at Row {row}, Column {col}\nInfo: {bonus}"
         info_label.config(text=info)
 
 
@@ -60,16 +59,20 @@ def qr_selector(qrs_per_row, qrs_per_col):
     photo = PhotoImage(file = "C:/Users/1108l/OneDrive/Desktop/QR_Database/charlie.png")
     # Resize image to fit on button
     photoimage = photo.subsample(1, 2)
-    # Position image on button
-    #Button(root, image = photoimage,).pack(side = BOTTOM, pady = 12)
-    #mainloop()
+    photo2 = PhotoImage(file = "C:/Users/1108l/OneDrive/Desktop/QR_Database/nate.png")
+    photoimage2 = photo2.subsample(1,2)
     # Create a grid of QR code buttons
     rows, cols = qrs_per_row, qrs_per_col  # Large grid size
     for i in range(rows):
         for j in range(cols):
-            qr_button = Button(scrollable_frame, text=f"QR {i},{j}", width=400, height=200,
-                            command=lambda r=i, c=j: on_qr_click(r, c), image=photoimage)
-            qr_button.grid(row=i, column=j, padx=1, pady=1)
+            if (i + j) % 2 == 0:
+                qr_button = Button(scrollable_frame, text=f"QR {i},{j}", width=200, height=100,
+                                command=lambda r=i, c=j: on_qr_click(r, c, "CHARLIE"), image=photoimage)
+                qr_button.grid(row=i, column=j, padx=1, pady=1)
+            else:
+                qr_button = Button(scrollable_frame, text=f"QR {i},{j}", width=200, height=100,
+                                command=lambda r=i, c=j: on_qr_click(r, c, "NATE"), image=photoimage2)
+                qr_button.grid(row=i, column=j, padx=1, pady=1)
     root.mainloop()
 
 if __name__=="__main__":
