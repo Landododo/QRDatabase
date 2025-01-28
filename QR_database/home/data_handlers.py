@@ -1,6 +1,7 @@
-def handle_uploaded_file(request):
-    file_name = request.title
-    with open("user_data.txt", 'w') as f:
-        f.write(request.file)
-    print(request)
-    return None
+from QR_database.settings import BASE_DIR
+
+def handle_uploaded_file(file):
+    file_name = file.name
+    with open(str(BASE_DIR) + "/home/uploads/gds_file/" + file_name, 'wb+') as f:
+        for chunk in file.chunks():
+            f.write(chunk)

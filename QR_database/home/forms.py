@@ -1,9 +1,14 @@
 from django import forms
 
 
-class UploadFileForm(forms.Form):
+class UploadGDSFileForm(forms.Form):
     title = forms.CharField(max_length=50)
     file = forms.FileField()
+    def clean_file(self):
+        file = self.cleaned_data.get("file")
+        if not file.name.endswith(".gds"):
+            raise forms.ValidationError("Only GDS files are allowed.")
+        return file
 
 class MultipleFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True

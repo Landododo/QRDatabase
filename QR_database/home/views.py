@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from .forms import UploadFileForm, FileFieldForm
+from .forms import UploadGDSFileForm, FileFieldForm
 from django.views.generic.edit import FormView
-
+from django import forms
 from .data_handlers import handle_uploaded_file
 
 
@@ -16,12 +16,12 @@ def success(request):
 
 def upload(request):
     if request.method == "POST":
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
+        form = UploadGDSFileForm(request.POST, request.FILES)
+        if form.is_valid() and request.FILES["file"].name.split(".")[1] == "gds":
             handle_uploaded_file(request.FILES["file"])
             return HttpResponseRedirect("/success/")
     else:
-        form = UploadFileForm()
+        form = UploadGDSFileForm()
     return render(request, "upload.html", {"form": form})
 
 class FileFieldFormView(FormView):
