@@ -1,4 +1,4 @@
-from QR_counter import count_qr_codes
+from QR_database.QR_counter import count_qr_codes
 from tkinter import *
 from tkinter import filedialog
 from QR_Selector import qr_selector

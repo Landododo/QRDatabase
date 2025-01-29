@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Selector and File Upload</title>
+    <style>
+        body {
+            font-family: "Comic Sans MS", "comic-sans";
+            margin: 20px;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+        }
+        select, input[type="file"], button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload Documents</h1>
+        
+        <!-- Document Selector -->
+        <form id="uploadForm" method="POST" enctype="multipart/form-data">
+            <label for="document-select">Select a Document:</label>
+            <select id="document-select" name="document-select" required>
+                <option value="" disabled selected>Select an option</option>
+                <option value="doc1">Document 1</option>
+                <option value="doc2">Document 2</option>
+                <option value="doc3">Document 3</option>
+            </select>
+
+            <!-- Multiple File Upload -->
+            <label for="file-upload">Upload Files:</label>
+            <input type="file" id="file-upload" name="files[]" multiple required>
+
+            <!-- Submit Button -->
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        // Optional: Add form validation or additional interactivity here
+        document.getElementById("uploadForm").addEventListener("submit", (e) => {
+            const selectedDocument = document.getElementById("document-select").value;
+            const files = document.getElementById("file-upload").files;
+
+            if (!selectedDocument) {
+                e.preventDefault();
+                alert("Please select a document from the dropdown list.");
+                return;
+            }
+
+            if (files.length === 0) {
+                e.preventDefault();
+                alert("Please upload at least one file.");
+                return;
+            }
+
+            alert("Form submitted successfully!");
+        });
+    </script>
+</body>
+</html>
