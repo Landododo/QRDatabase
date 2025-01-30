@@ -6,6 +6,7 @@
 <body>
     <h1>About Page</h1>
     <a href="{% url 'index' %}">Go Back to Home</a>
+    <a href="{% url 'inputs' %}">To inputs</a>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}

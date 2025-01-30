@@ -47,17 +47,18 @@
         
         <!-- Document Selector -->
         <form id="uploadForm" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
             <label for="document-select">Select a Document:</label>
             <select id="document-select" name="document-select" required>
                 <option value="" disabled selected>Select an option</option>
-                <option value="doc1">Document 1</option>
-                <option value="doc2">Document 2</option>
-                <option value="doc3">Document 3</option>
+                {% for file in file_list %}
+                <option value={{file.id}}>{{file.file_name}}</option>
+                {% endfor %}
             </select>
 
             <!-- Multiple File Upload -->
             <label for="file-upload">Upload Files:</label>
-            <input type="file" id="file-upload" name="files[]" multiple required>
+            <input type="file" id="file-upload" name="file_field" multiple required>
 
             <!-- Submit Button -->
             <button type="submit">Submit</button>

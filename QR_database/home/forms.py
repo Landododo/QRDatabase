@@ -12,6 +12,7 @@ class UploadGDSFileForm(forms.Form):
 
 class MultipleFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True
+    is_required = True
 
 class MultipleFileField(forms.FileField):
     def __init__(self, *args, **kwargs):
