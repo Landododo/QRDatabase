@@ -5,6 +5,8 @@ import datetime
 import sqlite3
 from .models import gds_files
 import os
+import zipfile
+
 
 def handle_uploaded_file(file):
     """Handles an uploaded gds file by uploading the file to
@@ -32,9 +34,13 @@ def handle_sample_file(file, id):
     directory_path = str(BASE_DIR) + "/home/uploads/samples/id=" + id + "/"
     if not os.path.exists(directory_path):
         os.mkdir(directory_path)
-    with open(directory_path + file.name, 'wb+') as f:
-        for chunk in file.chunks():
-            f.write(chunk)
+    if ".zip" in file.name:
+        with zipfile.ZipFile(file, 'r') as zip_ref:
+            zip_ref.extractall(directory_path)
+    else:
+        with open(directory_path + file.name, 'wb+') as f:
+            for chunk in file.chunks():
+                f.write(chunk)
     with connection.cursor() as cursor:
         cursor.execute("UPDATE home_gds_files SET last_updated = %s WHERE id = %s", [datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), int(id)])
 
