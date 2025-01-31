@@ -17,13 +17,19 @@ def count_qr_codes(gds_file):
     n = len(all_cells)
     length, height = top_cell.get_bounding_box()[1]
     qr_size = all_cells[0].get_bounding_box()[1][0] - all_cells[0].get_bounding_box()[0][0]
+    padding = top_cell.get_bounding_box()[0][0].item()
     # gets the length of the rows/cols in terms of the qr size
     row_length = length / qr_size
     col_length = height / qr_size
     #standardizes these sizes to get the actual number of qrs in each row/col
     qrs_in_row, qrs_in_col = scale_to_product(row_length, col_length, n)
     qrs_in_row, qrs_in_col = round(qrs_in_row), round(qrs_in_col)
-    return (n, qr_size.item(), qrs_in_row, qrs_in_col)
+    if n > 1:
+        spacing = (length - qrs_in_row * qr_size.item() - padding)/(qrs_in_row - 1)
+        spacing = spacing.item()
+    else:
+        spacing = 0
+    return (n, qr_size.item(), qrs_in_row, qrs_in_col, round(spacing,3) , padding)
 
 
 def scale_to_product(a, b, target_product):
@@ -34,6 +40,6 @@ def scale_to_product(a, b, target_product):
 
 # Example usage
 if __name__ == "__main__":
-    gds_file_path = "file.gds"  # Replace with your .gds file path
+    gds_file_path = "highpadding.gds"  # Replace with your .gds file path
     qr_code_count = count_qr_codes(gds_file_path)
     print(f"Number of QR codes in the GDS file: {qr_code_count}")

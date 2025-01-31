@@ -1,6 +1,6 @@
 import cv2, os
 
-from classes import Detection
+#from classes import Detection
 
 detector = cv2.QRCodeDetector()
 
@@ -45,6 +45,10 @@ if __name__ == "__main__":
     get_detections(path, True)
 
 
+class Detection:
+    def __init__(self, payload, vertices):
+        self.payload = payload
+        self.vertices = vertices
 
 
 
