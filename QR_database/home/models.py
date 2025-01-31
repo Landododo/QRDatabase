@@ -18,6 +18,16 @@ class gds_files(models.Model):
                self.qrs_per_row + "x" + self.qrs_per_col+" grid")
     
 class sample_images(models.Model):
+    """gds_file_id: the id of the gds file that the sample image is part of,
+    file_name = name of image file,
+    width = width of image in pixels,
+    height = height in pixels,
+    row = row of the qr code that is being highlighted by this part of database (starts with row 0 and 0,0 is in bottom left of grid),
+    col = col of the qr code that is being highlighted by this part of database (starts with col 0 and 0,0 is in bottom left of grid),
+    abs_x = absolute x value of the qr code (bottom left corner),
+    abs_y = absolute y value of the qr code (bottom left corner),
+    num_codes = number of codes in the image,
+    img_id = a unique image id, with this id being shared by all qr codes in the image in the database"""
     gds_file_id = models.IntegerField()
     file_name = models.CharField(max_length = 50)
     width = models.IntegerField()
