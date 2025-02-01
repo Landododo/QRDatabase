@@ -53,10 +53,8 @@ def handle_sample_file(file, id):
             rand_id = random.randint(-sys.maxsize-1, sys.maxsize)
             unique_id = False
             while unique_id == False:
-                print("FUCKS")
                 cursor.execute("Select * FROM home_gds_files WHERE id = %s", [rand_id])
                 info = cursor.fetchall()
-                print(info)
                 if info == []:
                     unique_id = True
 
