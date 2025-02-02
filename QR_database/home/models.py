@@ -39,3 +39,4 @@ class sample_images(models.Model):
     num_codes = models.IntegerField()
     img_id = models.IntegerField()
     is_anchor = models.IntegerField()
+    layer = models.IntegerField()
