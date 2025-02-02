@@ -38,3 +38,4 @@ class sample_images(models.Model):
     abs_y = models.FloatField()
     num_codes = models.IntegerField()
     img_id = models.IntegerField()
+    is_anchor = models.IntegerField()
