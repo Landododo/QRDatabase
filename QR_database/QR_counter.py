@@ -31,7 +31,7 @@ def count_qr_codes(gds_file):
     length, height = top_cell.get_bounding_box()[1]
     qr_size = all_cells[0].get_bounding_box()[1][0] - all_cells[0].get_bounding_box()[0][0]
     padding = top_cell.get_bounding_box()[0][0].item()
-    spacing -= qr_size
+    spacing -= qr_size.item()
     # gets the length of the rows/cols in terms of the qr size
     row_length = length / qr_size
     col_length = height / qr_size
@@ -61,6 +61,7 @@ def count_qr_codes(gds_file):
     #     spacing = spacing.item()
     # else:
     #     spacing = 0
+    print(n, qr_size.item(), qrs_in_row, qrs_in_col, round(spacing, 3), padding)
     return (n, qr_size.item(), qrs_in_row, qrs_in_col, round(spacing,3) , padding)
 
 
