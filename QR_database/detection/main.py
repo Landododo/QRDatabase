@@ -1,4 +1,4 @@
-import cv2, os
+import cv2, os, numpy as np
 
 #from classes import Detection
 
@@ -46,9 +46,41 @@ if __name__ == "__main__":
 
 
 class Detection:
-    def __init__(self, payload, vertices):
+    def __init__(self, payload, vertices, anchor = False):
         self.payload = payload
         self.vertices = vertices
+
+        if anchor:
+            i_basis: np.ndarray = vertices[2] - vertices[1]
+            j_basis: np.ndarray = vertices[4] - vertices[1]
+            flipped: bool = np.cross(i_basis, j_basis) < 0
+
+            x, y = i_basis
+            if x == 0:
+                # Check if x is vertical
+                rot = (90 if vertices[2][1] > 0 else -90)
+            else:
+                rot = np.atan(y/x)
+
+            if x < 0:
+                if y >= 0:
+                    rot += 180
+                else:
+                    rot -= 180
+            self.flipped = flipped
+            self.rot = rot
+            self.translate = vertices[1]
+            self.scale: float = np.linalg.norm(i_basis) / 100.0
+
+
+
+
+
+
+
+
+
+
 
 
 
