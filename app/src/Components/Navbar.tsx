@@ -11,7 +11,7 @@ export interface NavbarProps {
 }
 
 const paths: Map<string, string> = new Map([
-    ["Layout", "/layout"],
+    ["Layout", ""],
     ["Code View", "/code"],
     ["Upload", "/upload"],
     ["Manage", "/manage"]
@@ -31,9 +31,9 @@ function Navbar(props: NavbarProps) {
                     </h1>
                 </Stack>
                 <Stack spacing={2} direction="row">
-                    {[...paths.keys()].map((path) => {
+                    {[...paths.keys()].map((path, ix) => {
                         return (
-                            <Link to={props.projectId ? `/${props.projectId}${paths.get(path)}` : ""}
+                            <Link key={ix} to={props.projectId ? `/${props.projectId}${paths.get(path)}` : ""}
                                   className={props.projectId ? "" : "link-disabled"}>
                                 {path}
                             </Link>

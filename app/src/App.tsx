@@ -4,6 +4,7 @@ import { useState } from 'react'
 import './App.css'
 import Navbar from "./Components/Navbar";
 import project from "./data/project"
+import { Outlet } from 'react-router-dom';
 
 function App() {
   const [proj, setProj] = useState<project>()
@@ -11,6 +12,7 @@ function App() {
   return (
     <>
       <Navbar projectName={"Test"} projectId="5" showAttributions={() => {}}/>
+      <Outlet/>
     </>
   )
 }

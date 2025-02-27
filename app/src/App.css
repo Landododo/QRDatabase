@@ -40,3 +40,16 @@
 .read-the-docs {
   color: #888;
 }
+
+#chipViewer {
+  background-color: gray;
+  a {
+    background-color: white;
+    text-decoration: none;
+    color: black;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

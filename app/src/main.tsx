@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -10,18 +10,28 @@ import App from './App.tsx'
 import HomePage from "./Pages/HomePage";
 import {ThemeProvider} from "@mui/material";
 import theme from "./theme";
+import { CodeViewer } from './Pages/IndividualCodeViewer.tsx';
+import { ChipViewer } from './Components/ChipViewer.tsx';
+import { payloadContext } from './data/payload.ts';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
       <ThemeProvider theme={theme}>
-        <BrowserRouter>
-            <Routes>
-                <Route element={<App />}>
-                    <Route index element={<HomePage />} />
-                    <Route/>
-                </Route>
-            </Routes>
-        </BrowserRouter>
+        <payloadContext.Provider value={{codesX:50, codesY: 50, spacingX: 50, spacingY: 50, layer: []}}>
+          <BrowserRouter>
+              <Routes>
+                  <Route element={<App />}>
+                      <Route index element={<HomePage />} />
+                      <Route path=":projectId" element={<ChipViewer />}>
+                        <Route path="codes"/>
+                          <Route index element={<Navigate to="/"/>}/>
+                          <Route path=":codeid" element ={<CodeViewer/>}>
+                        </Route>
+                      </Route>
+                  </Route>
+              </Routes>
+          </BrowserRouter>
+        </payloadContext.Provider>
     </ThemeProvider>
   </StrictMode>
 )

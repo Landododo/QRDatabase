@@ -1,4 +1,4 @@
-export default interface project {
+export type project = {
     name?: "string",
     id?: "string",
 }
