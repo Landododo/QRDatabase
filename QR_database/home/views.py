@@ -27,7 +27,7 @@ def upload(request):
 
 class FileFieldFormView(FormView):
     form_class = FileFieldForm
-    template_name = "views.html"  # Replace with your template.
+    template_name = "view.html"  # Replace with your template.
     success_url = "/view/"  # Replace with your URL or reverse().
     
     def get_context_data(self, **kwargs):

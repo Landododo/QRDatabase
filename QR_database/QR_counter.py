@@ -15,13 +15,12 @@ def count_qr_codes(gds_file):
     i = 0
     spacing = 0
     for child in top.each_inst():
-        print(child.dbbox().left)
+        # print(child.dbbox().left)
         if i == 1:
             spacing = child.dbbox().left - spacing
             break
         spacing = child.dbbox().left
         i += 1
-    print(f"{spacing=}")
     # Get the top level cell (parent of all other cells)
     top_cell = library.top_level()[0]
 
@@ -38,30 +37,6 @@ def count_qr_codes(gds_file):
     #standardizes these sizes to get the actual number of qrs in each row/col
     qrs_in_row, qrs_in_col = scale_to_product(row_length, col_length, n)
     qrs_in_row, qrs_in_col = round(qrs_in_row), round(qrs_in_col)
-    # has_text = False
-    # if qrs_in_row != qrs_in_col:
-    #     no_text_spacing = abs((length - height)/(qrs_in_row-qrs_in_col)/qr_size)
-    #     text_spacing = abs((length - height)/(qrs_in_row-qrs_in_col)/qr_size) +abs(.0222222/(qrs_in_row-qrs_in_col))
-    #     if abs(height - ((qrs_in_col+.15) * qr_size - (qrs_in_col-1) *text_spacing) - padding) < qr_size * .005 and  abs(length - ((qrs_in_row + .12777778)*qr_size + (qrs_in_row -1)* text_spacing - padding)) < qr_size * .005:
-    #         has_text = True
-    #         print("def text")
-    #     elif abs(height - qrs_in_col * qr_size - (qrs_in_col - 1) * no_text_spacing - padding) < qr_size*.005 and abs(length - qrs_in_row * qr_size - (qrs_in_row -1) * no_text_spacing - padding) < qr_size * .005:
-    #         print("no text haha")
-    #     else:
-    #         print("bru")
-    # else:
-    #     # length - height = -.02222 *qr_size if text so if greater than some tolerance then there must be text
-    #     if abs(length - height) < .05 * qr_size:
-    #         has_text = True
-    #         print("has texts")
-    #     #otherwise will not have text
-    # print(length-height)
-    # if n > 1:
-    #     spacing = (length - qrs_in_row * qr_size.item() - padding)/(qrs_in_row - 1)
-    #     spacing = spacing.item()
-    # else:
-    #     spacing = 0
-    print(n, qr_size.item(), qrs_in_row, qrs_in_col, round(spacing, 3), padding)
     return (n, qr_size.item(), qrs_in_row, qrs_in_col, round(spacing,3) , padding)
 
 
@@ -75,7 +50,7 @@ def scale_to_product(a, b, target_product):
 if __name__ == "__main__":
     gds_file_path = "square1.gds"  # Replace with your .gds file path
     qr_code_count = count_qr_codes(gds_file_path)
-    print(f"Number of QR codes in the GDS file: {qr_code_count}")
+    # print(f"Number of QR codes in the GDS file: {qr_code_count}")
     gds_file_path = "square2.gds"  # Replace with your .gds file path
     qr_code_count = count_qr_codes(gds_file_path)
-    print(f"Number of QR codes in the GDS file: {qr_code_count}")
+    # print(f"Number of QR codes in the GDS file: {qr_code_count}")
