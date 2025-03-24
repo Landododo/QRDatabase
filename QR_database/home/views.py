@@ -66,10 +66,11 @@ class FileFieldFormInputs(FormView):
         print("doing something")
         files = tuple(self.request.FILES.getlist("file_field"))
         id = self.request.POST.get('document-select')
-        print(files, id)
+        debug = self.request.POST.get("debug") == "true"
         for f in files:
             print(f)
-            handle_sample_file(f, id)
+            print(f'{debug=}')
+            handle_sample_file(f, id, debug)
         return super().form_valid(form)
     
 def file_list():

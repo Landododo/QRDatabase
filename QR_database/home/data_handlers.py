@@ -34,7 +34,7 @@ def handle_uploaded_file(file):
     new_file.save()
 
 
-def add_sample_to_db(file_name, id, directory_path):
+def add_sample_to_db(file_name, id, directory_path, debug = False):
     """adds an individual file to the database"""
     detections = get_detections(directory_path + file_name)
     print(detections)
@@ -73,12 +73,17 @@ def add_sample_to_db(file_name, id, directory_path):
                 sample_file.col = (sample_file.abs_y - padding) / (qr_size + spacing)
             sample_file.num_codes = len(detections)
             sample_file.img_id = rand_id # unique id for each image that is the same regardless of which qr code is stored
-            sample_file.is_anchor = True
+            cursor.execute("Select * FROM home_sample_images WHERE img_id = %s AND gds_file_id = %s", [rand_id, id])
+            info = cursor.fetchall()
+            if info == []:
+                sample_file.is_anchor = True
+            else:
+                sample_file.is_anchor = False
             sample_file.layer = 1
             sample_file.save()
             print(sample_file)
 
-def handle_sample_file(file, id):
+def handle_sample_file(file, id, debug = False):
     """Takes in a file and the id of the gds file that it is a sample to,
     and adds that file to the sample folder with the id of the gds file,
     and adds the sample file(s) to the database as well. Handles multiple files
@@ -97,7 +102,7 @@ def handle_sample_file(file, id):
                     os.remove(directory_path + path.filename)
                 else:
                     print("addding")
-                    add_sample_to_db(path.filename, id, directory_path)
+                    add_sample_to_db(path.filename, id, directory_path, debug = debug)
 
     else:
         if Path(file.name).suffix in [".png", ".jpeg", ".jpg", ".jp2"]:

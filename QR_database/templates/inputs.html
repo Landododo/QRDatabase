@@ -61,7 +61,8 @@
             <input type="file" id="file-upload" name="file_field" multiple required>
 
             <!-- Submit Button -->
-            <button type="submit">Submit</button>
+            <button name = "submit" type="submit">Submit</button>
+            <button name = "submit and debug" type="submit">Submit and Debug</button>
         </form>
     </div>
 
@@ -82,7 +83,15 @@
                 alert("Please upload at least one file.");
                 return;
             }
+            // Determine which button was clicked
+            const debug = e.submitter.name === "submit and debug"; // true if debug button, false otherwise
 
+            // Add a hidden input to send the debug value
+            const debugInput = document.createElement("input");
+            debugInput.type = "hidden";
+            debugInput.name = "debug";
+            debugInput.value = debug;
+            document.getElementById("uploadForm").appendChild(debugInput);
             alert("Form submitted successfully!");
         });
     </script>
