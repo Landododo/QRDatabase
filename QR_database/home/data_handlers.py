@@ -16,6 +16,8 @@ def handle_uploaded_file(file):
     into the database."""
     file_name = file.name
     file_path = str(BASE_DIR) + "/home/uploads/gds_file/" + file_name
+    if not os.path.exists(file_path):
+        os.makedirs(file_path)
     with open(file_path, 'wb+') as f:
         for chunk in file.chunks():
             f.write(chunk)
@@ -92,7 +94,7 @@ def handle_sample_file(file, id, debug = False):
     """
     directory_path = str(BASE_DIR) + "/home/uploads/samples/id=" + id + "/"
     if not os.path.exists(directory_path):
-        os.mkdir(directory_path)
+        os.makedirs(directory_path)
     if ".zip" in file.name:
         with zipfile.ZipFile(file, 'r') as zip_ref:
             zip_ref.extractall(directory_path)
