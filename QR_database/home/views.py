@@ -67,10 +67,22 @@ class FileFieldFormInputs(FormView):
         files = tuple(self.request.FILES.getlist("file_field"))
         id = self.request.POST.get('document-select')
         debug = self.request.POST.get("debug") == "true"
-        for f in files:
-            print(f)
-            print(f'{debug=}')
-            handle_sample_file(f, id, debug)
+
+        if debug:
+            DEBUG_DIRECTORY = "./debug/scanner/"
+            debug_images = [] # initialize list of empty debug images to show
+            for f in files:
+                print(f)
+                print(f'{debug=}')
+                handle_sample_file(f, id, debug)
+                debug_path = DEBUG_DIRECTORY + f"{f.name.split("/")[-1].split(".")[0]}_detections.png"
+                debug_images.append(debug_path)
+            print(debug_images)
+        else:
+            for f in files:
+                print(f)
+                print(f'{debug=}')
+                handle_sample_file(f, id, debug)
         return super().form_valid(form)
     
 def file_list():

@@ -63,6 +63,7 @@ def add_sample_to_db(file_name, id, directory_path, debug = False):
             sample_file.width = im.shape[1]
             sample_file.height = im.shape[0]
             if "." not in detection.payload:
+                print(detection.payload)
                 sample_file.row, sample_file.col = int(re.search( ",(.*):U=UL",detection.payload).group(1)), int(detection.payload.split(",")[0])
                 sample_file.abs_x = sample_file.row * (qr_size + spacing) + padding
                 sample_file.abs_y = sample_file.col * (qr_size + spacing) + padding
@@ -109,7 +110,7 @@ def handle_sample_file(file, id, debug = False):
             with open(directory_path + file.name, 'wb+') as f:
                 for chunk in file.chunks():
                     f.write(chunk)
-        add_sample_to_db(file.name, id, directory_path)
+        add_sample_to_db(file.name, id, directory_path, debug = debug)
     with connection.cursor() as cursor:
         cursor.execute("UPDATE home_gds_files SET last_updated = %s WHERE id = %s", [datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), int(id)])
 
