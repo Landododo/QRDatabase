@@ -20,7 +20,7 @@ const paths: Map<string, string> = new Map([
 
 function Navbar(props: NavbarProps) {
     return (
-        <Box component={"nav"} sx={{backgroundColor: 'palette.primary'}}>
+        <Box component={"nav"} id="navbar" sx={{backgroundColor: 'primary.main'}}>
             <Stack direction="row">
                 <Stack spacing={2} direction="row" divider={<Divider orientation={"vertical"} flexItem/>}>
                     <IconButton component={Link} to={"/"} aria-label={"home"} color={"secondary"}>
@@ -41,7 +41,7 @@ function Navbar(props: NavbarProps) {
                     })}
                 </Stack>
                 <IconButton aria-label={"attributions"} onClick={props.showAttributions}>
-                    <InfoRounded/>
+                    <InfoRounded color="info"/>
                 </IconButton>
             </Stack>
         </Box>

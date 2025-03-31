@@ -1,18 +1,26 @@
-import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
+import { useEffect, useState } from 'react'
 import './App.css'
 import Navbar from "./Components/Navbar";
-import project from "./data/project"
+import { project, ProjectContext } from "./data/project"
 import { Outlet } from 'react-router-dom';
 
 function App() {
-  const [proj, setProj] = useState<project>()
+  const [proj, setProj] = useState<project>({})
+
+  useEffect(() => {
+
+
+    return () => {
+
+    }
+  })
 
   return (
     <>
       <Navbar projectName={"Test"} projectId="5" showAttributions={() => {}}/>
-      <Outlet/>
+      <ProjectContext.Provider value={proj}>
+        <Outlet/>
+      </ProjectContext.Provider>
     </>
   )
 }

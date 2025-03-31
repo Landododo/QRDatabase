@@ -1,37 +1,5 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
 
 .card {
   padding: 2em;
@@ -52,4 +20,47 @@
     justify-content: center;
     align-items: center;
   }
+}
+
+#navbar {
+  position: relative;
+  top: 0;
+  display: flex;
+  color: white;
+  height: 5vh;
+  align-items: flex-start;
+  justify-content: stretch;
+  flex-flow: column nowrap;
+}
+
+#navbar div {
+  height: 100%;
+}
+
+#navbar a {
+  color: white;
+  height: 60%;
+  font-size: 16pt;
+}
+
+#navbar .MuiStack-root {
+  display: flex;
+  align-items: center;
+}
+
+#navbar .MuiStack-root a {
+  display: flex;
+  align-items: center;
+  margin-left: 1.5em;
+  transition: color 0.2s linear;
+}
+
+#navbar .MuiStack-root a:hover {
+  color: #c4a0f9
+}
+
+#navbar button {
+  position: absolute;
+  right: 1.5em;
+  
 }

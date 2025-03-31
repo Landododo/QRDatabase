@@ -17,7 +17,7 @@ import { payloadContext } from './data/payload.ts';
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
       <ThemeProvider theme={theme}>
-        <payloadContext.Provider value={{codesX:50, codesY: 50, spacingX: 50, spacingY: 50, layer: []}}>
+        <payloadContext.Provider value={{codesX:50, codesY: 50, spacingX: 0.2, spacingY: 0.2, layer: []}}>
           <BrowserRouter>
               <Routes>
                   <Route element={<App />}>
