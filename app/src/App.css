@@ -15,7 +15,6 @@
     background-color: white;
     text-decoration: none;
     color: black;
-    border: 1px solid black;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -62,5 +61,27 @@
 #navbar button {
   position: absolute;
   right: 1.5em;
-  
+}
+
+#resetChipView {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease-in, visibility 0.3s ease-in;
+  transition-behavior: allow-discrete;
+
+  @starting-style {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+#resetChipView.resetVisible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  cursor: pointer;
 }

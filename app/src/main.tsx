@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Navigate, Outlet, Route, Routes} from "react-router-dom";
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -22,9 +22,8 @@ createRoot(document.getElementById('root')!).render(
               <Routes>
                   <Route element={<App />}>
                       <Route index element={<HomePage />} />
-                      <Route path=":projectId" element={<ChipViewer />}>
-                        <Route path="codes"/>
-                          <Route index element={<Navigate to="/"/>}/>
+                      <Route path=":projectId" element={<Outlet />}>
+                          <Route index element={<ChipViewer />} />
                           <Route path=":codeid" element ={<CodeViewer/>}>
                         </Route>
                       </Route>
