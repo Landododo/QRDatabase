@@ -39,6 +39,13 @@
         button:hover {
             background-color: #45a049;
         }
+        #drop_zone {
+        border: 5px solid rgb(0, 0, 0);
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -60,13 +67,21 @@
             <label for="file-upload">Upload Files:</label>
             <input type="file" id="file-upload" name="file_field" multiple required>
 
+            <!-- Drop Zone -->
+            <div
+                id="drop_zone"
+                ondrop="dropHandler(event);"
+                ondragover="dragOverHandler(event);">
+                <p>Drag one or more files to this <i>drop zone</i> or select them manually.</p>
+            </div>
             <!-- Submit Button -->
-            <button type="submit">Submit</button>
+            <button name = "submit" type="submit">Submit</button>
+            <button name = "submit and debug" type="submit">Submit and Debug</button>
         </form>
     </div>
 
     <script>
-        // Optional: Add form validation or additional interactivity here
+        // Form submission logic
         document.getElementById("uploadForm").addEventListener("submit", (e) => {
             const selectedDocument = document.getElementById("document-select").value;
             const files = document.getElementById("file-upload").files;
@@ -82,9 +97,48 @@
                 alert("Please upload at least one file.");
                 return;
             }
+            // Determine which button was clicked
+            const debug = e.submitter.name === "submit and debug"; // true if debug button, false otherwise
 
+            // Add a hidden input to send the debug value
+            const debugInput = document.createElement("input");
+            debugInput.type = "hidden";
+            debugInput.name = "debug";
+            debugInput.value = debug;
+            document.getElementById("uploadForm").appendChild(debugInput);
             alert("Form submitted successfully!");
         });
+        // Handle drag-and-drop logic
+        function dragOverHandler(ev) {
+            ev.preventDefault();
+            ev.dataTransfer.dropEffect = "copy"; // Show the copy icon
+        }
+        function dropHandler(ev) {
+            // Prevent default behavior (Prevent file from being opened)
+            ev.preventDefault();
+
+            const fileInput = document.getElementById("file-upload");
+            const dt = ev.dataTransfer;
+            const files = dt.files;
+
+            if (files.length > 0) {
+                const fileList = Array.from(fileInput.files); // Get existing files
+
+                // Append new files from drop event
+                for (let i = 0; i < files.length; i++) {
+                    fileList.push(files[i]);
+                }
+
+                // Create a new DataTransfer to add all files
+                const dataTransfer = new DataTransfer();
+                fileList.forEach((file) => dataTransfer.items.add(file));
+
+                // Assign the combined files back to the input
+                fileInput.files = dataTransfer.files;
+
+                alert(`${files.length} file(s) added successfully!`);
+            }
+        }
     </script>
 </body>
 </html>
