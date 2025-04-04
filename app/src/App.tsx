@@ -5,7 +5,7 @@ import { project, ProjectContext } from "./data/project"
 import { Outlet } from 'react-router-dom';
 
 function App() {
-  const [proj, setProj] = useState<project>({})
+  const [proj, setProj] = useState<project>({id: "5"})
 
   useEffect(() => {
 

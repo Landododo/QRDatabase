@@ -26,10 +26,13 @@
   top: 0;
   display: flex;
   color: white;
-  height: 5vh;
+  height: 60px;
   align-items: flex-start;
   justify-content: stretch;
   flex-flow: column nowrap;
+  h1 {
+    font-size: 20pt;
+  }
 }
 
 #navbar div {
@@ -84,4 +87,57 @@
   visibility: visible;
   pointer-events: auto;
   cursor: pointer;
+}
+
+#codeViewer {
+  padding: 0 10%;
+  padding-top: 25px;
+  h1 {
+    text-align: center;
+  }
+  .centered{
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+  }
+  img {
+    min-width: 20vw;
+    max-width: 100%;
+  }
+}
+
+form {
+
+  input[type=number], input[type=text] {
+    background-color: #333;
+    border: 2px solid var(--mui-palette-primary-dark);
+    border-radius: 0.1em;
+    color: white;
+    padding: 0.3em;
+  }
+  > * {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 14pt;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  input[type=submit], input::file-selector-button {
+    background-image: linear-gradient(135deg, var(--mui-palette-primary-main), var(--mui-palette-primary-dark));
+    color: white;
+    padding: 0.5em;
+    border: none;
+    border-radius: 5px;
+
+
+    :hover > div {
+        background-color:rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  input[type=file] {
+    border: 2px solid var(--mui-palette-primary-dark);
+    padding: 5px;
+  }
 }

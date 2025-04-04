@@ -20,7 +20,7 @@ export type Image = {
     transforms: string,
 }
 
-export const payloadContext = React.createContext<payload>({
+export const PayloadContext = React.createContext<payload>({
     codesX: 0,
     codesY: 0,
     spacingX: 0,

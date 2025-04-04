@@ -2,13 +2,14 @@
 import PanZoom, { Element as PanZoomElement } from "@sasza/react-panzoom"
 import { API as PanZoomAPI } from "@sasza/react-panzoom";
 import { ReactElement, useContext, useEffect, useRef, useState } from "react"
-import { payloadContext } from "../data/payload";
+import { PayloadContext } from "../data/payload";
 import { Link, LinkProps } from "react-router-dom";
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { IconButton } from "@mui/material";
+import { ZoomOut } from "@mui/icons-material";
 
 export function ChipViewer() {
-    const payload = useContext(payloadContext);
+    const payload = useContext(PayloadContext);
     const containerRef = useRef<HTMLDivElement>(null);
     const panZoomRef = useRef<PanZoomAPI>(null);
 
@@ -28,7 +29,7 @@ export function ChipViewer() {
             //const screenAspect = rect.width / rect.height;
 
             const codesSpacingNeedsX = payload.codesX + (payload.codesX-1) * payload.spacingX;
-            const codesSpacingNeedsY = payload.codesX + (payload.codesX-1) * payload.spacingX;
+            const codesSpacingNeedsY = payload.codesY + (payload.codesY-1) * payload.spacingY;
 
             const ratioX = rect.width / codesSpacingNeedsX;
             const ratioY = rect.height / codesSpacingNeedsY;
@@ -100,7 +101,7 @@ export function ChipViewer() {
                     },
                     color: 'white',
                 }}>
-                <RestartAltIcon />
+                <ZoomOut />
             </IconButton>
         </div>
     );

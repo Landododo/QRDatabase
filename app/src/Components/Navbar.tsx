@@ -12,7 +12,7 @@ export interface NavbarProps {
 
 const paths: Map<string, string> = new Map([
     ["Layout", ""],
-    ["Code View", "/code"],
+    ["Code View", "/select"],
     ["Upload", "/upload"],
     ["Manage", "/manage"]
 ])
