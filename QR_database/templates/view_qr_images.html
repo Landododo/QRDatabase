@@ -1,0 +1,14 @@
+<h2>Images with QR code at ({{ row }}, {{ col }})</h2>
+
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+  {% for image in images %}
+    <div>
+      <img src="/media/home/uploads/samples/id={{ image.gds_file_id }}/{{ image.file_name }}"
+           alt="{{ image.file_name }}"
+           style="width: 200px; border: 1px solid #ccc;" />
+      <p>{{ image.file_name }}</p>
+    </div>
+  {% endfor %}
+</div>
+
+<a href="/view/${gds_file_id}/">Back to QR Grid</a>

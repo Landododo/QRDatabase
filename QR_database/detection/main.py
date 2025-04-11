@@ -1,5 +1,5 @@
 import cv2, os, numpy as np
-
+from pyzbar.pyzbar import decode
 #from classes import Detection
 
 detector = cv2.QRCodeDetector()
@@ -46,23 +46,29 @@ def get_detections(path: str, debug=False):
     cv2.imshow('Image Window Title', img)
     cv2.waitKey(0)
 
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    codes = decode(gray)
+    # print(f'{result=}')
 
-    found_code, payloads, points, _ = detector.detectAndDecodeMulti(img)
-    if not found_code:
+    # found_code, payloads, points, _ = detector.detectAndDecodeMulti(img)
+    #print(f'{payloads=}')
+    # print(f'{points=}')
+    result = []
+
+    for code in codes:
+        payload = code.data.decode("utf-8")
+        points = np.array(code.polygon, dtype=np.float32)
+
+        result.append(Detection(payload, points))
+
+    if not codes:
         print("NOTHING")
         return ()
     else:
-        result =  tuple(
-            Detection(payload, point_set)
-            for payload, point_set
-            in zip(payloads, points)
-            if payload
-        )
         if debug:
-            img = cv2.polylines(img, points.astype(int), True, (255, 0, 0), 2)
-            for point_set in points:
-                img = cv2.circle(img, point_set[0].astype(int), 3, (0, 255, 0), 2, cv2.FILLED,0)
-
+            for det in result:
+                pts = det.vertices.reshape((-1, 1, 2)).astype(int)
+                img = cv2.polylines(img, [pts], isClosed=True, color=(255, 0, 0), thickness=2)
             fname = DEBUG_DIRECTORY + f"{path.split("/")[-1].split(".")[0]}_detections.png"
             print(f"Writing to {fname}")
             print("Debug image saved!"

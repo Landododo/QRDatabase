@@ -93,6 +93,7 @@
     const selectedOption = this.options[this.selectedIndex];
     const rows = parseInt(selectedOption.getAttribute("data-rows"), 10);
     const cols = parseInt(selectedOption.getAttribute("data-cols"), 10);
+
     buildGrid(rows, cols);
   });
 
@@ -155,7 +156,9 @@
         if (target.classList.contains("cell")) {
           const row = target.dataset.row;
           const col = target.dataset.col;
-          window.location.href = `/view_qr/${row}/${col}/`;
+          const currentOption = select.options[select.selectedIndex];
+          const gds_file_id = currentOption.value;
+          window.location.href = `/view_qr/${gds_file_id}/${row}/${col}/`;
           //alert(`Clicked QR ${row}, ${col}`);
         }
       }

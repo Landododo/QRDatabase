@@ -152,9 +152,9 @@ def sample_list():
     ]
     return file_list
 
-def view_qr_images(request, row, col):
+def view_qr_images(request, row, col, gds_id):
     with connection.cursor() as cursor:
-        cursor.execute("SELECT * FROM home_sample_images WHERE row = %s AND col = %s AND ", [row, col])
+        cursor.execute("SELECT * FROM home_sample_images WHERE row = %s AND col = %s AND gds_file_id = %s", [row, col, gds_id])
         results = cursor.fetchall()
 
     image_list = [
