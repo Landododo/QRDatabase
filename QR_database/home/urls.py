@@ -10,6 +10,8 @@ urlpatterns = [
 
     path("success/", views.success, name="success"),
     path("view/", FileFieldFormView.as_view(), name="view"),
+    path("view_qr/<int:gds_id>/<int:row>/<int:col>/", views.view_qr_images, name="view_qr_images"),
+
     #path("inputs/", views.inputs, name="inputs"),
 
 

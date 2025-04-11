@@ -51,14 +51,19 @@ def upload(request):
 class FileFieldFormView(FormView):
     form_class = FileFieldForm
     template_name = "view.html"  # Replace with your template.
-    success_url = "/view/"  # Replace with your URL or reverse().
+    def get_success_url(self):
+        return f"/view/{self.kwargs['gds_file_id']}/"
     
     def get_context_data(self, **kwargs):
         # Get default context from parent class
         context = super().get_context_data(**kwargs)
+        gds_file_id = self.kwargs.get("gds_file_id")  # ✅ extract from URL
+
         # Add additional data to the context
         context["file_list"] = file_list()
         context["samples"] = sample_list()
+        context["gds_file_id"] = gds_file_id  # ✅ pass to template
+
         print(context)
         return context
     
@@ -154,8 +159,10 @@ def sample_list():
 
 def view_qr_images(request, row, col, gds_id):
     with connection.cursor() as cursor:
+        print(f"Fetching images for row={row}, col={col}, gds_id={gds_id}")
         cursor.execute("SELECT * FROM home_sample_images WHERE row = %s AND col = %s AND gds_file_id = %s", [row, col, gds_id])
         results = cursor.fetchall()
+        print(f'{results=}')
 
     image_list = [
         {
@@ -169,5 +176,6 @@ def view_qr_images(request, row, col, gds_id):
     return render(request, "view_qr_images.html", {
         "row": row,
         "col": col,
-        "images": image_list
+        "images": image_list,
+        "gds_file_id": gds_id
     })

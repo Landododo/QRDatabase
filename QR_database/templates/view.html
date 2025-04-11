@@ -9,11 +9,13 @@
         <option value="{{ file.id }}"
                 data-rows="{{ file.qrs_per_col }}"
                 data-cols="{{ file.qrs_per_row }}"
-                {% if file.id == 3 %}selected{% endif %}>
+                {% if file.id == gds_file_id %}selected{% endif %}>
           {{ file.file_name }}
         </option>
       {% endfor %}
     </select>
+    <h1>Viewing samples for GDS File {{ gds_file_id }}</h1>
+
   <style>
     html, body {
       margin: 0;
@@ -91,10 +93,13 @@
   // Handle selection changes
   select.addEventListener("change", function () {
     const selectedOption = this.options[this.selectedIndex];
-    const rows = parseInt(selectedOption.getAttribute("data-rows"), 10);
-    const cols = parseInt(selectedOption.getAttribute("data-cols"), 10);
+    const gds_file_id = selectedOption.value;
+    window.location.href = `/view/${gds_file_id}/`;
 
-    buildGrid(rows, cols);
+    // const rows = parseInt(selectedOption.getAttribute("data-rows"), 10);
+    // const cols = parseInt(selectedOption.getAttribute("data-cols"), 10);
+
+    //buildGrid(rows, cols);
   });
 
   // Optional: Build grid for initial selection

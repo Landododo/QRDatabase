@@ -24,9 +24,12 @@ urlpatterns = [
     # path("api/files/", views.api_file_list, name="api-files"),
     # path("api/samples/", views.api_sample_list, name="api-samples"),
     path("view_qr/<int:gds_id>/<int:row>/<int:col>/", views.view_qr_images, name="view_qr_images"),
+    path("view/<int:gds_file_id>/", views.FileFieldFormView.as_view(), name="view"),
+
+
 
 ]
-from django.conf import settings
-from django.conf.urls.static import static
+# from django.conf import settings
+# from django.conf.urls.static import static
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
