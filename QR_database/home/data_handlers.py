@@ -15,9 +15,12 @@ def handle_uploaded_file(file):
     the correct location, and then inserting the file information
     into the database."""
     file_name = file.name
-    file_path = str(BASE_DIR) + "/home/uploads/gds_file/" + file_name
-    if not os.path.exists(file_path):
-        os.makedirs(file_path)
+    upload_dir = os.path.join(BASE_DIR, "home/uploads/gds_file/")
+    file_path = os.path.join(upload_dir, file_name)
+    print("Saving to:", file_path)
+
+    if not os.path.exists(upload_dir):
+        os.makedirs(upload_dir)
     with open(file_path, 'wb+') as f:
         for chunk in file.chunks():
             f.write(chunk)

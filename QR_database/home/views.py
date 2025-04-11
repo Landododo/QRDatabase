@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.http import HttpResponseRedirect
 from .forms import UploadGDSFileForm, FileFieldForm, MultipleFileField
 from django.views.generic.edit import FormView
@@ -14,6 +14,29 @@ def index(request):
 
 def success(request):
     return render(request, 'home.html')
+# # gets api file list for React t ouse
+# def api_file_list(request):
+#     return JsonResponse(file_list(), safe=False)
+
+# def api_sample_list(request):
+#     row = request.GET.get("row")
+#     col = request.GET.get("col")
+#     if row is not None and col is not None:
+#         with connection.cursor() as cursor:
+#             cursor.execute("SELECT * FROM home_sample_images WHERE row = %s AND col = %s", [row, col])
+#             results = cursor.fetchall()
+#         return JsonResponse([
+#             {
+#                 "gds_file_id": r[1],
+#                 "file_name": r[2],
+#                 "row": r[5],
+#                 "col": r[6],
+#                 "img_id": r[10]
+#             }
+#             for r in results
+#         ], safe=False)
+#     else:
+#         return JsonResponse([], safe=False)
 
 def upload(request):
     if request.method == "POST":
@@ -128,3 +151,23 @@ def sample_list():
         for row in files
     ]
     return file_list
+
+def view_qr_images(request, row, col):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM home_sample_images WHERE row = %s AND col = %s AND ", [row, col])
+        results = cursor.fetchall()
+
+    image_list = [
+        {
+            "file_name": r[2],
+            "gds_file_id": r[1],
+            "img_id": r[10],
+        }
+        for r in results
+    ]
+
+    return render(request, "view_qr_images.html", {
+        "row": row,
+        "col": col,
+        "images": image_list
+    })
