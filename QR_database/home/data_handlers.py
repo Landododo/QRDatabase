@@ -76,9 +76,11 @@ def add_sample_to_db(file_name, id, directory_path, debug = False):
                 sample_file.abs_y = sample_file.col * (qr_size + spacing) + padding
 
             else:
-                sample_file.abs_x, sample_file.abs_y = int(re.search(",(.*):U=")),int(detection.payload.split(",")[0])
-                sample_file.row = (sample_file.abs_x - padding) / (qr_size + spacing)
-                sample_file.col = (sample_file.abs_y - padding) / (qr_size + spacing)
+                print(detection.payload)
+                sample_file.abs_x, sample_file.abs_y = map(float, detection.payload.split(':', 1)[0].split(','))
+                print(sample_file.abs_x, sample_file.abs_y)
+                sample_file.row = round((sample_file.abs_x - padding) / (qr_size + spacing))
+                sample_file.col = round((sample_file.abs_y - padding) / (qr_size + spacing))
             sample_file.num_codes = len(detections)
             sample_file.img_id = rand_id # unique id for each image that is the same regardless of which qr code is stored
             cursor.execute("Select * FROM home_sample_images WHERE img_id = %s AND gds_file_id = %s", [rand_id, id])
@@ -89,6 +91,7 @@ def add_sample_to_db(file_name, id, directory_path, debug = False):
                 sample_file.is_anchor = False
             sample_file.layer = 1
             coords_detected.append(f"QR code detected at row: {sample_file.row} col: {sample_file.col}")
+
             sample_file.save()
             print(sample_file)
     return debug_image_path, coords_detected
