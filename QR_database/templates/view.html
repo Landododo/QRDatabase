@@ -1,115 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Grid</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .grid-container {
-            position: relative;
-            width: 600px;
-            height: 600px;
-            overflow: hidden;
-            border: 2px solid #ccc;
-            margin: 20px auto;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            grid-template-rows: repeat(10, 1fr);
-            width: 100%;
-            height: 100%;
-            transform-origin: center;
-            transition: transform 0.3s ease;
-        }
-        .cell {
-            border: 1px solid #ddd;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            cursor: pointer;
-        }
-        .cell.highlighted {
-            background-color: yellow;
-        }
-        .controls {
-            text-align: center;
-            margin: 10px 0;
-        }
-        .zoom-info {
-            margin-top: 5px;
-            font-size: 14px;
-        }
-    </style>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">QR Viewer</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+  
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="/upload/">Upload GDS Files</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/inputs/">Upload Sample Files</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/view/1/">View QR Grid</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    </nav>
+  <title>QR Grid Viewer</title>
+  <label for="document-select">Select a GDS File:</label>
+    <select name="document-select" id="document-select" required>
+        {% for file in file_list %}
+        <option value="{{ file.id }}"
+                data-rows="{{ file.qrs_per_col }}"
+                data-cols="{{ file.qrs_per_row }}"
+                {% if file.id == gds_file_id %}selected{% endif %}>
+          {{ file.file_name }}
+        </option>
+      {% endfor %}
+    </select>
+    <h1>Viewing samples for GDS File {{ gds_file_id }}</h1>
+
+  <style>
+     html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+      width: 100%;
+      font-family: sans-serif;
+    }
+
+    #container {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+      background: #f0f0f0;
+      cursor: grab;
+    }
+
+    #grid {
+      position: absolute;
+      display: grid;
+      grid-template-columns: repeat(60, 100px);
+      grid-auto-rows: 100px;
+      gap: 2px;
+      transform-origin: top left;
+    }
+
+    .cell {
+      border: 1px solid #999;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      user-select: none;
+    }
+  </style>
 </head>
 <body>
-    <div class="controls">
-        <button onclick="zoomIn()">Zoom In</button>
-        <button onclick="zoomOut()">Zoom Out</button>
-        <p class="zoom-info">Zoom Level: <span id="zoom-level">1x</span></p>
-    </div>
-    <div class="grid-container" id="grid-container">
-        <div class="grid" id="grid">
-            <!-- Grid cells generated dynamically -->
-        </div>
-    </div>
-    <script>
-        const grid = document.getElementById("grid");
-        const zoomLevelDisplay = document.getElementById("zoom-level");
-        let zoomLevel = 1;
 
-        // Generate a grid of 10x10 cells
-        const rows = 10;
-        const cols = 10;
+<div id="container">
+  <div id="grid"></div>
+</div>
 
-        for (let i = 0; i < rows; i++) {
-            for (let j = 0; j < cols; j++) {
-                const cell = document.createElement("div");
-                cell.classList.add("cell");
-                cell.textContent = `${i},${j}`;
-                cell.dataset.row = i;
-                cell.dataset.col = j;
 
-                // Add click event to highlight the cell
-                cell.addEventListener("click", () => {
-                    highlightCell(cell);
-                });
+<script>
+    const grid = document.getElementById("grid");
+    const select = document.getElementById("document-select");
+    const selectedOption = select.options[select.selectedIndex];
+    const rows = selectedOption.getAttribute("data-rows");
+    const cols = selectedOption.getAttribute("data-cols");
+    // const rows = 20;
+    // const cols = 40;
+    //System.log(rows)
+    // Generate cells
+    function buildGrid(rows, cols) {
+    grid.innerHTML = "";  // Clear existing grid
+    grid.style.display = "grid";
+    grid.style.gridTemplateColumns = `repeat(${cols}, 100px)`;
+    grid.style.gridAutoRows = "100px";
+    grid.style.gap = "2px";
 
-                grid.appendChild(cell);
-            }
+    for (let row = rows - 1; row > 0; row--) {
+      for (let col = 0; col < cols; col++) {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        cell.dataset.col = col;
+        cell.dataset.row = row;
+        cell.textContent = `(${row}, ${col})`;
+        grid.appendChild(cell);
+      }
+    }
+  }
+  // Handle selection changes
+  select.addEventListener("change", function () {
+    const selectedOption = this.options[this.selectedIndex];
+    const gds_file_id = selectedOption.value;
+    window.location.href = `/view/${gds_file_id}/`;
+
+    // const rows = parseInt(selectedOption.getAttribute("data-rows"), 10);
+    // const cols = parseInt(selectedOption.getAttribute("data-cols"), 10);
+
+    //buildGrid(rows, cols);
+  });
+
+  // Optional: Build grid for initial selection
+  window.addEventListener("DOMContentLoaded", () => {
+    const selectedOption = select.options[select.selectedIndex];
+    const rows = parseInt(selectedOption.getAttribute("data-rows"), 10);
+    const cols = parseInt(selectedOption.getAttribute("data-cols"), 10);
+    buildGrid(rows, cols);
+  });
+
+    // for (let row = 0; row < rows; row++) {
+    //     for (let col = 0; col < cols; col++) {
+    //         const cell = document.createElement("div");
+    //         cell.className = "cell";
+    //         cell.dataset.row = row;
+    //         cell.dataset.col = col;
+    //         cell.textContent = `(${row}, ${col})`; // ✅ Add row and col label
+    //         grid.appendChild(cell);
+    //     }
+    // }
+  
+    // Zoom and pan logic
+    let scale = 1;
+    let offsetX = 0;
+    let offsetY = 0;
+    let isDragging = false;
+    let dragStartX, dragStartY;
+    let startMouseX, startMouseY;
+  
+    const container = document.getElementById("container");
+  
+    container.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.1 : 0.1;
+      scale = Math.min(Math.max(0.2, scale + delta), 4);
+      updateTransform();
+    });
+  
+    container.addEventListener("mousedown", (e) => {
+      isDragging = true;
+      container.style.cursor = "grabbing";
+      dragStartX = offsetX;
+      dragStartY = offsetY;
+      startMouseX = e.clientX;
+      startMouseY = e.clientY;
+    });
+  
+    container.addEventListener("mouseup", (e) => {
+      container.style.cursor = "grab";
+      if (!isDragging) return;
+  
+      const distX = Math.abs(e.clientX - startMouseX);
+      const distY = Math.abs(e.clientY - startMouseY);
+      const dragDistance = Math.sqrt(distX * distX + distY * distY);
+  
+      // If not a drag, treat it as a click
+      if (dragDistance < 5) {
+        const target = e.target;
+        if (target.classList.contains("cell")) {
+          const row = target.dataset.row;
+          const col = target.dataset.col;
+          const currentOption = select.options[select.selectedIndex];
+          const gds_file_id = currentOption.value;
+          window.location.href = `/view_qr/${gds_file_id}/${row}/${col}/`;
+          //alert(`Clicked QR ${row}, ${col}`);
         }
+      }
+  
+      isDragging = false;
+    });
+  
+    container.addEventListener("mousemove", (e) => {
+      if (isDragging) {
+        offsetX = dragStartX + (e.clientX - startMouseX);
+        offsetY = dragStartY + (e.clientY - startMouseY);
+        updateTransform();
+      }
+    });
+  
+    function updateTransform() {
+      grid.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+    }
+  </script>
 
-        // Zoom in the grid
-        function zoomIn() {
-            zoomLevel += 0.2;
-            grid.style.transform = `scale(${zoomLevel})`;
-            updateZoomInfo();
-        }
-
-        // Zoom out the grid
-        function zoomOut() {
-            zoomLevel = Math.max(0.4, zoomLevel - 0.2); // Prevent zooming out too much
-            grid.style.transform = `scale(${zoomLevel})`;
-            updateZoomInfo();
-        }
-
-        // Update zoom level display
-        function updateZoomInfo() {
-            zoomLevelDisplay.textContent = `${zoomLevel.toFixed(1)}x`;
-        }
-
-        // Highlight a cell
-        function highlightCell(cell) {
-            // Remove highlight from all cells
-            document.querySelectorAll(".cell").forEach(c => c.classList.remove("highlighted"));
-
-            // Highlight the clicked cell
-            cell.classList.add("highlighted");
-        }
-    </script>
 </body>
 </html>
