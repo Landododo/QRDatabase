@@ -10,6 +10,7 @@ from detection.main import get_detections
 import cv2,random, sys, re
 from pathlib import Path
 
+
 def handle_uploaded_file(file):
     """Handles an uploaded gds file by uploading the file to
     the correct location, and then inserting the file information
@@ -41,10 +42,11 @@ def handle_uploaded_file(file):
 
 def add_sample_to_db(file_name, id, directory_path, debug = False):
     """adds an individual file to the database"""
-    detections = get_detections(directory_path + file_name)
+    detections, debug_image_path = get_detections(directory_path + file_name, debug = debug)
     print(detections)
     im = cv2.imread(directory_path + file_name)
     print(im)
+    coords_detected = []
     with connection.cursor() as cursor:
         # get information from the gds file (used to calculate qr code position)
         cursor.execute("SELECT qr_size, spacing, padding FROM home_gds_files WHERE id = %s", [id])
@@ -86,8 +88,12 @@ def add_sample_to_db(file_name, id, directory_path, debug = False):
             else:
                 sample_file.is_anchor = False
             sample_file.layer = 1
+            coords_detected.append(f"QR code detected at row: {sample_file.row} col: {sample_file.col}")
             sample_file.save()
             print(sample_file)
+    return debug_image_path, coords_detected
+    
+        
 
 def handle_sample_file(file, id, debug = False):
     """Takes in a file and the id of the gds file that it is a sample to,
@@ -98,6 +104,9 @@ def handle_sample_file(file, id, debug = False):
     directory_path = str(BASE_DIR) + "/home/uploads/samples/id=" + id + "/"
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
+
+    debug_images = []
+
     if ".zip" in file.name:
         with zipfile.ZipFile(file, 'r') as zip_ref:
             zip_ref.extractall(directory_path)
@@ -108,14 +117,19 @@ def handle_sample_file(file, id, debug = False):
                     os.remove(directory_path + path.filename)
                 else:
                     print("addding")
-                    add_sample_to_db(path.filename, id, directory_path, debug = debug)
+                    debug_path, coords= add_sample_to_db(path.filename, id, directory_path, debug = debug)
+                    if debug_path:
+                        debug_images.append((debug_path, coords))
 
     else:
         if Path(file.name).suffix in [".png", ".jpeg", ".jpg", ".jp2"]:
             with open(directory_path + file.name, 'wb+') as f:
                 for chunk in file.chunks():
                     f.write(chunk)
-        add_sample_to_db(file.name, id, directory_path, debug = debug)
+            debug_path, coords = add_sample_to_db(file.name, id, directory_path, debug=debug)
+            if debug_path:
+                debug_images.append((debug_path, coords))
     with connection.cursor() as cursor:
         cursor.execute("UPDATE home_gds_files SET last_updated = %s WHERE id = %s", [datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), int(id)])
-
+    print(f'{debug_images=}')
+    return debug_images

@@ -32,15 +32,29 @@
 <h2>Images with QR code at ({{ row }}, {{ col }})</h2>
 
 <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-  {% for image in images %}
+  {% for file in images %}
     <div>
-      <img src="/media/samples/id={{ image.gds_file_id }}/{{ image.file_name }}"
-           alt="{{ image.file_name }}"
-           style="width: 800px; border: 1px solid #ccc;" />
-      <p>{{ image.file_name }}</p>
+      {% if file.file_name|lower|slice:"-4:" == ".png" %}
+        <img src="/media/samples/id={{ file.gds_file_id }}/{{ file.file_name }}" alt="{{ file.file_name }}" style="width: 800px; border: 1px solid #ccc;" />
+      {% elif file.file_name|lower|slice:"-4:" == ".jpg" %}
+        <img src="/media/samples/id={{ file.gds_file_id }}/{{ file.file_name }}" alt="{{ file.file_name }}" style="width: 800px; border: 1px solid #ccc;" />
+      {% elif file.file_name|lower|slice:"-5:" == ".jpeg" %}
+        <img src="/media/samples/id={{ file.gds_file_id }}/{{ file.file_name }}" alt="{{ file.file_name }}" style="width: 800px; border: 1px solid #ccc;" />
+      {% elif file.file_name|lower|slice:"-4:" == ".jp2" %}
+        <img src="/media/samples/id={{ file.gds_file_id }}/{{ file.file_name }}" alt="{{ file.file_name }}" style="width: 800px; border: 1px solid #ccc;" />
+      {% else %}
+        <a href="/media/samples/id={{ file.gds_file_id }}/{{ file.file_name }}" download>Download {{ file.file_name }}</a>
+      {% endif %}
+      <p>{{ file.file_name }}</p>
     </div>
   {% endfor %}
 </div>
+<form action="/upload_sample/{{ gds_file_id }}/{{ row }}/{{ col }}/" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <label for="file_field">Upload file for QR ({{ row }}, {{ col }}):</label>
+  <input type="file" name="file_field" required>
+  <button type="submit" class="btn btn-primary mt-2">Upload</button>
+</form>
 
 <a href="/view/{{ gds_file_id }}/">Back to QR Grid</a>
 </body>

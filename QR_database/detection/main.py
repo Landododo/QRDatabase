@@ -1,6 +1,9 @@
 import cv2, os, numpy as np
 from pyzbar.pyzbar import decode
 #from classes import Detection
+from django.conf import settings
+from pathlib import Path
+
 
 detector = cv2.QRCodeDetector()
 class Detection:
@@ -30,9 +33,17 @@ class Detection:
             self.translate = vertices[1]
             self.scale: float = np.linalg.norm(i_basis) / 100.0
             
-DEBUG_DIRECTORY = "./debug/scanner/"
+DEBUG_DIRECTORY = os.path.join(settings.MEDIA_ROOT, "debug", "scanner")
 if not os.path.exists(DEBUG_DIRECTORY):
     os.makedirs(DEBUG_DIRECTORY)
+
+def to_media_url_fragment(abs_path: str | Path) -> str:
+    """
+    Convert '/…/project/media/debug/scanner/foo.png' -> 'debug/scanner/foo.png'
+    """
+    rel = Path(abs_path).resolve().relative_to(Path(settings.MEDIA_ROOT).resolve())
+    # Force forward slashes so the browser doesn’t get back‑slashes on Windows
+    return rel.as_posix()
 
 def get_detections(path: str, debug=False):
     """
@@ -43,8 +54,8 @@ def get_detections(path: str, debug=False):
     :return: Empty tuple if no qr codes are successfully detected in the image
     """
     img = cv2.imread(path)
-    cv2.imshow('Image Window Title', img)
-    cv2.waitKey(0)
+    #cv2.imshow('Image Window Title', img)
+    # cv2.waitKey(0)
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     codes = decode(gray)
@@ -63,18 +74,25 @@ def get_detections(path: str, debug=False):
 
     if not codes:
         print("NOTHING")
-        return ()
+        return (), None
     else:
         if debug:
             for det in result:
                 pts = det.vertices.reshape((-1, 1, 2)).astype(int)
                 img = cv2.polylines(img, [pts], isClosed=True, color=(255, 0, 0), thickness=2)
-            fname = DEBUG_DIRECTORY + f"{path.split("/")[-1].split(".")[0]}_detections.png"
+                if img is None:
+                    print(f"[ERROR] Could not read image from {path}")
+            fname = os.path.join(DEBUG_DIRECTORY,f"{path.split("/")[-1].split(".")[0]}_detections.png")
             print(f"Writing to {fname}")
-            print("Debug image saved!"
-                  if cv2.imwrite(fname, img)
-                  else "Failed to write debug image")
-        return result
+            success = cv2.imwrite(fname, img)
+            if success:
+                print("Debug image saved!")
+                debug_image_path = to_media_url_fragment(fname)
+            else:
+                print("failed")
+        
+
+        return result, debug_image_path
 
 if __name__ == "__main__":
     import sys
